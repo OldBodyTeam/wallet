@@ -2,19 +2,25 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Avatar, Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import a from "@/assets/wallet.png";
-
+import { DefaultService, OpenAPI } from "@/client";
 interface loginProps {
   changeItemState: () => void;
 }
 
 const LoginForm: React.FC<loginProps> = (props) => {
   const { changeItemState } = props;
-  const onFinish = (values: number) => {
-    console.log("Received values of form: ", values);
-  };
   const navigate = useNavigate();
-  const handleLogin = () => {
-    navigate("/home");
+  const onFinish = async (values) => {
+    const data = await DefaultService.loginTokenPost({username: values.username, password: values.password})
+    console.log(data)
+    window.localStorage.setItem("token", data.user_id + "");
+    OpenAPI.HEADERS = async () => {
+      const token = window.localStorage.getItem('token')
+      return {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+    // navigate('/home')
   };
   return (
     <div className="flex justify-center items-center w-full h-screen">
@@ -50,7 +56,6 @@ const LoginForm: React.FC<loginProps> = (props) => {
         </Form.Item>
         <Form.Item className="w-full flex justify-center">
           <Button
-            onClick={handleLogin}
             type="primary"
             htmlType="submit"
             className="login-form-button"

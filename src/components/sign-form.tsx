@@ -1,7 +1,7 @@
 import { Avatar, Button, Form, Input, InputNumber } from "antd";
 import { useNavigate } from "react-router-dom";
 import a from "@/assets/wallet.png";
-
+import { UsersService, IndentifiersService, OpenAPI } from "@/client";
 interface registerProps {
   changeItemState: () => void;
 }
@@ -9,12 +9,31 @@ interface registerProps {
 const SignForm: React.FC<registerProps> = (props) => {
   const { changeItemState } = props;
   const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const onFinish = (values: number) => {
+  // const navigate = useNavigate();
+  const onFinish = async (values) => {
     console.log("Received values of form: ", values);
-  };
-  const handleRegister = () => {
-    navigate("/home");
+    const data = await UsersService.createUserUsersPost({
+      name: values.name,
+      ssn: values.ssn,
+      password: values.password,
+    });
+    window.localStorage.setItem("token", data.user_id + "");
+    OpenAPI.HEADERS = async () => {
+      const token = window.localStorage.getItem('token')
+      return {
+        'Authorization': `Bearer ${token}`
+      }
+    }
+    await IndentifiersService.bindIdentifierIndentifiersPost({
+      type: 0,
+      identifier_value: values.phone,
+    });
+    await IndentifiersService.bindIdentifierIndentifiersPost({
+      type: 1,
+      identifier_value: values.email,
+    });
+    console.log(data);
+    // navigate("/home");
   };
   return (
     <div className="flex justify-center items-center w-full h-screen">
@@ -34,7 +53,11 @@ const SignForm: React.FC<registerProps> = (props) => {
             <Avatar size={40} src={a} /> Wallet 网银平台
           </div>
         </Form.Item>
-        <Form.Item name="name" label="姓名">
+        <Form.Item
+          name="name"
+          label="姓名"
+          rules={[{ required: true, message: "请输入姓名" }]}
+        >
           <Input />
         </Form.Item>
         <Form.Item
@@ -42,7 +65,7 @@ const SignForm: React.FC<registerProps> = (props) => {
           label="SSN"
           rules={[{ required: true, message: "请输入正确的SSN！" }]}
         >
-          <InputNumber style={{ width: "100%" }} />
+          <Input style={{ width: "100%" }} />
         </Form.Item>
         <Form.Item
           name="phone"
@@ -108,7 +131,7 @@ const SignForm: React.FC<registerProps> = (props) => {
           <Input.Password />
         </Form.Item>
         <Form.Item className="w-full flex justify-center">
-          <Button type="primary" htmlType="submit" onClick={handleRegister}>
+          <Button type="primary" htmlType="submit">
             注册
           </Button>{" "}
           或者 <a onClick={() => changeItemState()}>现在登录!</a>
