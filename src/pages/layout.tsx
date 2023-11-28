@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import a from "@/assets/wallet.png";
+import { OpenAPI } from "@/client";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -56,6 +57,12 @@ const ContentLayout: React.FC = () => {
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  OpenAPI.HEADERS = async () => {
+    const token = window.localStorage.getItem('token')
+    return {
+      'Authorization': `Bearer ${token}`
+    }
+  }
   const navigate = useNavigate();
 
   const [nav, setNav] = useState([]);

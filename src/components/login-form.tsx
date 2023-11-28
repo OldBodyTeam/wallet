@@ -12,15 +12,14 @@ const LoginForm: React.FC<loginProps> = (props) => {
   const navigate = useNavigate();
   const onFinish = async (values) => {
     const data = await DefaultService.loginTokenPost({username: values.username, password: values.password})
-    console.log(data)
-    window.localStorage.setItem("token", data.user_id + "");
+    window.localStorage.setItem("token", data.access_token + "");
     OpenAPI.HEADERS = async () => {
       const token = window.localStorage.getItem('token')
       return {
         'Authorization': `Bearer ${token}`
       }
     }
-    // navigate('/home')
+    navigate('/home')
   };
   return (
     <div className="flex justify-center items-center w-full h-screen">
@@ -37,11 +36,11 @@ const LoginForm: React.FC<loginProps> = (props) => {
         </Form.Item>
         <Form.Item
           name="username"
-          rules={[{ required: true, message: "Please input your Username!" }]}
+          rules={[{ required: true, message: "请输入手机号登录" }]}
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
-            placeholder="手机号"
+            placeholder="请输入手机号登录"
           />
         </Form.Item>
         <Form.Item
