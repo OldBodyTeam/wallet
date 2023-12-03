@@ -1,15 +1,16 @@
 import {
   ProForm,
-  ProFormGroup,
   ProFormInstance,
-  ProFormList,
-  ProFormSelect,
   ProFormText,
 } from "@ant-design/pro-components";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Button } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UsersService, IndentifiersService } from "@/client";
+import EmailTable from "./email-table";
+import PhoneTable from "./phone-table";
+import { useRequest } from "ahooks";
+import FundTable from "./fund-table";
 
 const UserSetting = () => {
   const formRef = useRef<ProFormInstance>();
@@ -18,30 +19,55 @@ const UserSetting = () => {
     window.localStorage.removeItem("token");
     navigate("/");
   };
+  const { data, runAsync } = useRequest(
+    IndentifiersService.getIdentifiersIndentifiersGet,
+    { manual: true }
+  );
+  const tableData = useMemo(() => {
+    return data?.reduce(
+      (acc, cur) => {
+        console.log(cur);
+        if (cur.type === 1) {
+          acc.email.push(cur);
+        }
+        if (cur.type === 0) {
+          acc.phone.push(cur);
+        }
+        return acc;
+      },
+      { email: [], phone: [] }
+    );
+  }, [data]);
+  const { data: userInfo, runAsync: getUserInfo } = useRequest(
+    UsersService.readUsersMeUsersGet,
+    { manual: true }
+  );
   useEffect(() => {
     const init = async () => {
-      const userInfo = await UsersService.readUsersMeUsersGet();
-      const indentifiersInfo =
-        await IndentifiersService.getIdentifiersIndentifiersGet();
-      console.log(userInfo, indentifiersInfo);
-      formRef.current?.setFieldsValue({
-        id: userInfo.user_id,
-        name: userInfo.name,
-        ssn: userInfo.ssn,
-        phone: indentifiersInfo[0].identifier_value,
-        email: indentifiersInfo[1].identifier_value,
-      });
+      await runAsync();
+      await getUserInfo();
     };
     init();
-  });
-  const handleSubmit = () => {
-    console.log("handleSubmit");
+  }, [getUserInfo, runAsync]);
+  useEffect(() => {
+    formRef.current?.setFieldsValue({
+      id: userInfo?.user_id,
+      name: userInfo?.name,
+      ssn: userInfo?.ssn,
+    });
+  }, [userInfo]);
+  const handleSubmit = async (values) => {
+    console.log("handleSubmit", values);
+    await UsersService.updateUsersMeUsersPut(values);
+    await getUserInfo();
   };
-  const emailRef = useRef<any>();
-  const handleVerify = (index) => {
-    const row = emailRef.current?.get(index.key as number);
-    IndentifiersService.verifyIdentifierIndentifiersIdentifierValueVerifyPost(row.email)
-  }
+  // const emailRef = useRef<any>();
+  // const handleVerify = (index) => {
+  //   const row = emailRef.current?.get(index.key as number);
+  //   IndentifiersService.verifyIdentifierIndentifiersIdentifierValueVerifyPost(
+  //     row.email
+  //   );
+  // };
   return (
     <div className="min-h-full grid gap-4">
       <div>
@@ -75,7 +101,7 @@ const UserSetting = () => {
             rules={[{ required: true, message: "这是必填项" }]}
           />
         </ProForm.Group>
-        <ProForm.Group>
+        {/* <ProForm.Group>
           <ProFormText
             width="md"
             name="phone"
@@ -130,8 +156,11 @@ const UserSetting = () => {
               <Button type="primary">验证</Button>
             </ProFormGroup>
           </ProFormList>
-        </ProForm.Group>
+        </ProForm.Group> */}
       </ProForm>
+      <EmailTable data={tableData?.email ?? []} run={runAsync} />
+      <PhoneTable data={tableData?.phone ?? []} run={runAsync} />
+      <FundTable />
     </div>
   );
 };

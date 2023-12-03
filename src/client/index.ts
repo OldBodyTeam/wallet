@@ -12,12 +12,17 @@ export type { Body_login_token_post } from './models/Body_login_token_post';
 export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { Identifier } from './models/Identifier';
 export type { IdentifierCreate } from './models/IdentifierCreate';
+export type { RequestTransaction } from './models/RequestTransaction';
 export type { RequestTransactionCreate } from './models/RequestTransactionCreate';
 export type { SendTransaction } from './models/SendTransaction';
 export type { SendTransactionCreate } from './models/SendTransactionCreate';
+export type { Statement } from './models/Statement';
+export type { StatementExpense } from './models/StatementExpense';
+export type { StatementIncome } from './models/StatementIncome';
 export type { User } from './models/User';
 export type { UserBase } from './models/UserBase';
 export type { UserCreate } from './models/UserCreate';
+export type { UserReceiveRequest } from './models/UserReceiveRequest';
 export type { UserReceiveRequestCreate } from './models/UserReceiveRequestCreate';
 export type { ValidationError } from './models/ValidationError';
 

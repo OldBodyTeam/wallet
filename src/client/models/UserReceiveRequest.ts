@@ -3,8 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type UserReceiveRequestCreate = {
+import type { User } from './User';
+
+export type UserReceiveRequest = {
     amount: number;
-    user_id: number;
+    user: User;
+    request_status: string;
+    completed_time: (string | null);
 };
 

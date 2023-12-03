@@ -9,7 +9,6 @@ export type SendTransaction = {
     amount: number;
     memo: string;
     send_id: number;
-    submit_user_id: number;
     send_status: string;
     initiated_time: string;
     completed_time: (string | null);

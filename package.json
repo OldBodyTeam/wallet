@@ -13,8 +13,10 @@
   "dependencies": {
     "@ant-design/icons": "^5.2.6",
     "@ant-design/pro-components": "^2.6.43",
+    "ahooks": "^3.7.8",
     "antd": "^5.11.4",
     "axios": "^1.6.2",
+    "dayjs": "^1.11.10",
     "form-data": "^4.0.0",
     "less": "^4.2.0",
     "prettier": "^3.1.0",

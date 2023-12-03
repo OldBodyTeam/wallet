@@ -31,7 +31,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -54,7 +53,6 @@ export class AdminService {
                 'user_id': userId,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -80,7 +78,6 @@ export class AdminService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -105,7 +102,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -126,7 +122,6 @@ export class AdminService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -151,7 +146,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -176,7 +170,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -201,7 +194,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
@@ -226,7 +218,6 @@ export class AdminService {
                 'limit': limit,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });

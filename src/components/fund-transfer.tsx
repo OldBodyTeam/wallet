@@ -7,47 +7,42 @@ import {
 } from "@ant-design/pro-components";
 import { Button, message } from "antd";
 import { useState } from "react";
-
+import { SendTransactionsService } from "@/client";
+const options = [
+  { value: 1, label: "电子邮件" },
+  { value: 0, label: "电话号码" },
+];
 const FundTransfer = () => {
-  const [identiifer, setIdentifier] = useState("电子邮件");
-  const waitTime = (time: number = 100) => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(true);
-      }, time);
+  const [identiifer, setIdentifier] = useState(options[0].label);
+  const [form] = ProForm.useForm();
+  const onSubmit = async () => {
+    await form.validateFields();
+    const values = form.getFieldsValue();
+    console.log(values);
+    await SendTransactionsService.createSendTransactionSendPost({
+      ...values,
+      receiver_identifier: {
+        type: values.identiifer,
+        identifier_value: values.name
+      },
     });
+    message.success("提交成功");
   };
   return (
-    <ProForm<{
-      name: string;
-      company?: string;
-      useMode?: string;
-    }>
-      onFinish={async (values) => {
-        await waitTime(2000);
-        console.log(values);
-        message.success("提交成功");
-      }}
-      params={{}}
+    <ProForm
+      form={form}
       submitter={{
         render: (props, dom) => {
-          console.log(props, dom);
-          // dom[1]["props"]["children"]=
           return (
             <div className="flex gap-4">
-              <Button type="primary">确认转账</Button>
+              <Button type="primary" onClick={onSubmit}>
+                确认转账
+              </Button>
               {dom[0]}
             </div>
           );
         },
       }}
-      // request={async () => {
-      //   await waitTime(100);
-      //   return {
-      //     name: "",
-      //     useMode: "chapter",
-      //   };
-      // }}
     >
       <ProFormRadio.Group
         style={{
@@ -55,11 +50,15 @@ const FundTransfer = () => {
         }}
         label="用户标识"
         radioType="button"
+        name="identiifer"
         fieldProps={{
-          value: identiifer,
-          onChange: (e) => setIdentifier(e.target.value),
+          value: options.find((v) => v.label === identiifer).value,
+          onChange: (e) =>
+            setIdentifier(
+              options.find((v) => v.value === e.target.value).label
+            ),
         }}
-        options={["电子邮件", "电话号码"]}
+        options={options}
       />
       <ProFormText
         width="md"
@@ -77,7 +76,7 @@ const FundTransfer = () => {
         trigger="onBlur"
         required
       />
-      <ProFormTextArea width="md" name="note" label="转账备注" />
+      <ProFormTextArea width="md" name="memo" label="转账备注" />
     </ProForm>
   );
 };

@@ -11,7 +11,7 @@ import { request as __request } from '../core/request';
 export class AccountsService {
 
     /**
-     * Read Accounts
+     * 读取用户名下所有账户
      * @returns any Successful Response
      * @throws ApiError
      */
@@ -19,14 +19,11 @@ export class AccountsService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/accounts/',
-            errors: {
-                404: `Not found`,
-            },
         });
     }
 
     /**
-     * Bind Account
+     * 用户绑定一个新的account
      * @param requestBody
      * @returns any Successful Response
      * @throws ApiError
@@ -40,14 +37,13 @@ export class AccountsService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
     }
 
     /**
-     * Unbind Account
+     * 用户解绑已有的账户
      * @param accountId
      * @returns any Successful Response
      * @throws ApiError
@@ -62,14 +58,13 @@ export class AccountsService {
                 'account_id': accountId,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
     }
 
     /**
-     * Set Main Account
+     * 设置一个账户为主账户，同时设置其他账户为非主账户
      * @param accountId
      * @returns any Successful Response
      * @throws ApiError
@@ -84,7 +79,6 @@ export class AccountsService {
                 'account_id': accountId,
             },
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });

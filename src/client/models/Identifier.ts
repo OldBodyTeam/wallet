@@ -6,6 +6,9 @@
 export type Identifier = {
     identifier_value: string;
     type: number;
-    verification_status: string;
+    /**
+     * 验证状态
+     */
+    verification_status?: string;
 };
 

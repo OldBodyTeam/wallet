@@ -13,7 +13,7 @@ import { request as __request } from '../core/request';
 export class UsersService {
 
     /**
-     * Read Users Me
+     * 查询当前用户信息
      * @returns User Successful Response
      * @throws ApiError
      */
@@ -21,14 +21,11 @@ export class UsersService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/users/',
-            errors: {
-                404: `Not found`,
-            },
         });
     }
 
     /**
-     * Update Users Me
+     * 更新当前用户信息
      * @param requestBody
      * @returns User Successful Response
      * @throws ApiError
@@ -42,14 +39,13 @@ export class UsersService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
     }
 
     /**
-     * Create User
+     * 注册用户
      * @param requestBody
      * @returns User Successful Response
      * @throws ApiError
@@ -63,7 +59,6 @@ export class UsersService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });

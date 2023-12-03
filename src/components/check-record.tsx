@@ -1,6 +1,8 @@
 import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
 import { Space, Tag } from "antd";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useRequest } from "ahooks";
+import { RequestTransactionsService } from "@/client";
 type GithubIssueItem = {
   url: string;
   id: number;
@@ -128,11 +130,22 @@ const columns: ProColumns<GithubIssueItem>[] = [
 ];
 const CheckRecord = () => {
   const actionRef = useRef<ActionType>();
+  const { data, runAsync } = useRequest(
+    RequestTransactionsService.getRequestTransactionByMonthRequestMonthGet,
+    { manual: true }
+  );
+  useEffect(() => {
+    const init = async () => {
+      await runAsync();
+    };
+    init();
+  }, [runAsync]);
   return (
     <ProTable<GithubIssueItem>
       columns={columns}
       actionRef={actionRef}
       cardBordered
+      dataSource={data}
       // request={async (params, sort, filter) => {
       //   console.log(sort, filter);
       //   await waitTime(2000);

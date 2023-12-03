@@ -9,68 +9,77 @@ import {
 } from "@ant-design/pro-components";
 import { Button } from "antd";
 import { useRef, useState } from "react";
-
+import { RequestTransactionsService } from "@/client";
+import dayjs from "dayjs";
 const FundReceive = () => {
-  const [identiifer, setIdentifier] = useState("电子邮件");
   const formRef = useRef<ProFormInstance>();
+  const onSubmit = async () => {
+    const data = formRef.current?.getFieldsValue();
+    console.log(data);
+    RequestTransactionsService.createRequestTransactionRequestPost({
+      memo: data.note,
+      deadline: dayjs().unix().toString(),
+      receiver: data.users.map(v => {
+        return {
+          amount: Number(v.amount),
+          user_id: Number(v.user_id)
+        }
+      })
+    });
+  };
+  const handleConfig = async () => {
+    const data = formRef.current?.getFieldsValue();
+    console.log(data);
+    const totalAmount = data.totalAmount;
+    const users = data.users?.map((v) => {
+      return {
+        ...v,
+        amount: Number(totalAmount) / (data.users?.length ?? 1),
+      };
+    });
+    formRef.current.setFieldsValue({ users });
+  };
   return (
-    <ProForm<{
-      name: string;
-      company?: string;
-      useMode?: string;
-    }>
+    <ProForm
       formRef={formRef}
-      params={{ id: "100" }}
-      autoFocusFirstInput
       submitter={{
         render: (props, dom) => {
           console.log(props, dom);
           return (
             <div className="flex gap-4">
-              <Button type="primary">提交申请</Button>
-              <Button>平均分配</Button>
+              <Button type="primary" onClick={onSubmit}>
+                提交申请
+              </Button>
+              <Button onClick={handleConfig}>平均分配</Button>
               {dom[0]}
             </div>
           );
         },
       }}
     >
-      <ProFormRadio.Group
-        style={{
-          margin: 16,
-        }}
-        label="用户标识"
-        radioType="button"
-        fieldProps={{
-          value: identiifer,
-          onChange: (e) => setIdentifier(e.target.value),
-        }}
-        options={["电子邮件", "电话号码"]}
-      />
       <ProFormMoney
         label="分摊总金额"
-        name="totalamount"
+        name="totalAmount"
         width="md"
         min={0}
         trigger="onBlur"
         placeholder="请输入您申请的总金额"
-        rules={[{ required: true, message: "这是必填项" }]}
       />
       <ProFormTextArea width="md" name="note" label="申请备注" />
       <ProForm.Group>
-        <ProFormList name="emails" label="分摊用户" required>
+        <ProFormList name="users" label="分摊用户" required>
           {() => {
             return (
               <div className="flex gap-2">
                 <ProFormText
                   width="md"
-                  name="user"
-                  placeholder={"请输入" + identiifer}
-                  label={identiifer}
+                  name="user_id"
+                  placeholder={"请输入用户ID"}
+                  label="用户ID"
                 />
                 <ProFormText
                   width="md"
-                  name="money"
+                  name="amount"
                   placeholder={"请输入分摊金额"}
                   label="分摊金额"
                 />

@@ -12,7 +12,19 @@ import { request as __request } from '../core/request';
 export class SendTransactionsService {
 
     /**
-     * Create Send Transaction
+     * 查询历史转账记录
+     * @returns SendTransaction Successful Response
+     * @throws ApiError
+     */
+    public static readSendTransactionsSendGet(): CancelablePromise<Array<SendTransaction>> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/send/',
+        });
+    }
+
+    /**
+     * 发起一次转账请求
      * @param requestBody
      * @returns SendTransaction Successful Response
      * @throws ApiError
@@ -26,7 +38,6 @@ export class SendTransactionsService {
             body: requestBody,
             mediaType: 'application/json',
             errors: {
-                404: `Not found`,
                 422: `Validation Error`,
             },
         });
