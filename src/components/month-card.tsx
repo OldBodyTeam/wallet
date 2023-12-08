@@ -1,69 +1,18 @@
 import { ProCard } from "@ant-design/pro-components";
 import { List } from "antd";
 import RcResizeObserver from "rc-resize-observer";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import {useRequest} from 'ahooks'
+import { StatementsService } from "@/client";
 
-interface DataType {
-  id: string;
-  user: string;
-  time: string;
-  money: number;
-  action: string;
-}
 
 const MonthCard = () => {
   const [responsive, setResponsive] = useState(false);
-  const [data, setData] = useState<DataType[]>([
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-    {
-      id: "1",
-      user: "user1",
-      time: "2019年6月",
-      money: 123,
-      action: "transfer",
-    },
-  ]);
+  const {data, runAsync} = useRequest(StatementsService.getStatementsStatementsGet)
+
+  useEffect(() => {
+    runAsync()
+  }, [runAsync])
 
   return (
     <RcResizeObserver
@@ -89,7 +38,7 @@ const MonthCard = () => {
               <ProCard title="账户余额">123</ProCard>
             </ProCard>
           </ProCard>
-          <ProCard title="交易详情">
+          <ProCard title="收入交易详情">
             <div
               id="scrollableDiv"
               style={{
@@ -100,17 +49,14 @@ const MonthCard = () => {
               }}
             >
               <List
-                dataSource={data}
+                dataSource={data.expense}
                 renderItem={(item) => (
-                  <List.Item key={item.id}>
+                  <List.Item key={item.amount}>
                     <List.Item.Meta
-                      title={<a href="https://ant.design">{item.user}</a>}
-                      description={item.time}
+                      title="交易金额"
+                      description={item.amount}
                     />
-                    <div>
-                      {item.action === "transfer" ? "-" : "+"}
-                      {item.money}
-                    </div>
+                    
                   </List.Item>
                 )}
               />

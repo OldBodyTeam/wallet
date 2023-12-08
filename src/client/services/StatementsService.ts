@@ -22,4 +22,46 @@ export class StatementsService {
         });
     }
 
+    /**
+     * 按月分组查询用户的收支明细
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getIncomeStatementsGroupByMonthStatementsGroupGet(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/statements/group',
+        });
+    }
+
+    /**
+     * 带条件的查询用户的收支明细
+     * @param ssn
+     * @param identifierValue
+     * @param startTime
+     * @param endTime
+     * @returns Statement Successful Response
+     * @throws ApiError
+     */
+    public static getStatementsWithFilterStatementsFilterGet(
+        ssn?: (string | null),
+        identifierValue?: (string | null),
+        startTime?: (string | null),
+        endTime?: (string | null),
+    ): CancelablePromise<Statement> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/statements/filter',
+            query: {
+                'ssn': ssn,
+                'identifier_value': identifierValue,
+                'start_time': startTime,
+                'end_time': endTime,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
 }

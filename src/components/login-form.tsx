@@ -19,7 +19,7 @@ const LoginForm: React.FC<loginProps> = (props) => {
         'Authorization': `Bearer ${token}`
       }
     }
-    navigate('/home')
+    navigate('/home/userSetting')
   };
   return (
     <div className="flex justify-center items-center w-full h-screen">

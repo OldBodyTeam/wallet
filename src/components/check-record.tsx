@@ -1,198 +1,123 @@
-import { ActionType, ProColumns, ProTable } from "@ant-design/pro-components";
-import { Space, Tag } from "antd";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRequest } from "ahooks";
 import { RequestTransactionsService } from "@/client";
-type GithubIssueItem = {
-  url: string;
-  id: number;
-  number: number;
-  title: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
-};
+import { Button, Table } from "antd";
+import FundModel from "./fund-model";
+import dayjs from "dayjs";
 
-const columns: ProColumns<GithubIssueItem>[] = [
-  {
-    dataIndex: "index",
-    valueType: "indexBorder",
-    width: 48,
-  },
+const columns = [
   {
     title: "交易ID",
-    dataIndex: "title",
-    copyable: true,
+    dataIndex: "request_id",
     ellipsis: true,
-    tip: "包含出账和入账",
   },
   {
-    disable: true,
-    title: "类型",
-    dataIndex: "type",
-    filters: true,
-    onFilter: true,
-    ellipsis: true,
-    valueType: "select",
-    valueEnum: {
-      all: { text: "全部" },
-      open: {
-        text: "接收申请",
-        status: "Transfer",
-      },
-      closed: {
-        text: "发送申请",
-        status: "Receive",
-      },
-    },
+    title: "截止时间",
+    key: "deadline",
+    dataIndex: "deadline",
+    render: (deadline) => dayjs(deadline).format("YYYY-MM-DD HH:mm:ss"),
   },
   {
-    disable: true,
-    title: "标签",
-    dataIndex: "labels",
-    filters: true,
-    onFilter: true,
+    title: "备注",
+    dataIndex: "memo",
     ellipsis: true,
-    valueType: "select",
-    valueEnum: {
-      all: { text: "全部" },
-      agree: {
-        text: "待同意",
-        status: "agree",
-      },
-      receive: {
-        text: "待接收",
-        status: "receive",
-      },
-      register: {
-        text: "待注册",
-        status: "register",
-      },
-      finished: {
-        text: "已完成",
-        status: "finished",
-      },
-    },
-    renderFormItem: (_, { defaultRender }) => {
-      return defaultRender(_);
-    },
-    render: (_, record) => (
-      <Space>
-        {record.labels.map(({ name, color }) => (
-          <Tag color={color} key={name}>
-            {name}
-          </Tag>
-        ))}
-      </Space>
-    ),
-  },
-  {
-    title: "申请时间",
-    key: "time",
-    dataIndex: "created_at",
-    valueType: "date",
-    sorter: true,
   },
   {
     title: "操作",
     valueType: "option",
     key: "option",
-    render: () => [
-      <a
-        onClick={() => {
-          console.log("同意分摊");
-        }}
-      >
-        同意分摊
-      </a>,
-      <div>
-        <a
-          onClick={() => {
-            console.log("同意分摊");
-          }}
-        >
-          查看
-        </a>
-        {/* <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk}>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal> */}
-      </div>,
-    ],
+    render: (_, record) => <FundModel data={record} />,
   },
 ];
+
 const CheckRecord = () => {
-  const actionRef = useRef<ActionType>();
   const { data, runAsync } = useRequest(
-    RequestTransactionsService.getRequestTransactionByMonthRequestMonthGet,
+    RequestTransactionsService.getRequestTransactionsRequestGet,
+    { manual: true }
+  );
+
+  const { data: userReceiveData, runAsync: getUserReceive } = useRequest(
+    RequestTransactionsService.getUserReceiveRequestsRequestReceiveGet,
     { manual: true }
   );
   useEffect(() => {
-    const init = async () => {
-      await runAsync();
-    };
-    init();
-  }, [runAsync]);
+    runAsync();
+    getUserReceive();
+  }, [getUserReceive, runAsync]);
+  const handleAgree = async (params) => {
+    await RequestTransactionsService.confirmUserReceiveRequestRequestRequestTransactionIdConfirmPost(
+      params.request_id
+    );
+    await getUserReceive();
+  };
+  const columnsReceive = [
+    {
+      title: "交易ID",
+      dataIndex: "request_id",
+      ellipsis: true,
+    },
+    {
+      title: "完成时间",
+      key: "completed_time",
+      dataIndex: "completed_time",
+      render: (deadline) =>
+        deadline ? dayjs(deadline).format("YYYY-MM-DD HH:mm:ss") : "--",
+    },
+    {
+      title: "请求状态",
+      dataIndex: "request_status",
+      render: (status) => {
+        switch (status) {
+          case "confirmed":
+            return "完成状态";
+          case "pending":
+          default:
+            return "等待确认状态";
+        }
+      },
+    },
+    {
+      title: "金额",
+      dataIndex: "amount",
+      ellipsis: true,
+    },
+    {
+      title: "操作",
+      valueType: "option",
+      key: "option",
+      render: (_, record) => {
+        return (
+          <Button
+            onClick={() => handleAgree(record)}
+            type="primary"
+            disabled={record.request_status === "confirmed"}
+          >
+            同意
+          </Button>
+        );
+      },
+    },
+  ];
   return (
-    <ProTable<GithubIssueItem>
-      columns={columns}
-      actionRef={actionRef}
-      cardBordered
-      dataSource={data}
-      // request={async (params, sort, filter) => {
-      //   console.log(sort, filter);
-      //   await waitTime(2000);
-      //   return request<{
-      //     data: GithubIssueItem[];
-      //   }>("https://proapi.azurewebsites.net/github/issues", {
-      //     params,
-      //   });
-      // }}
-      editable={{
-        type: "multiple",
-      }}
-      columnsState={{
-        persistenceKey: "pro-table-singe-demos",
-        persistenceType: "localStorage",
-        onChange(value) {
-          console.log("value: ", value);
-        },
-      }}
-      rowKey="id"
-      search={{
-        labelWidth: "auto",
-      }}
-      options={{
-        setting: {
-          listsHeight: 400,
-        },
-      }}
-      form={{
-        // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-        syncToUrl: (values, type) => {
-          if (type === "get") {
-            return {
-              ...values,
-              created_at: [values.startTime, values.endTime],
-            };
-          }
-          return values;
-        },
-      }}
-      pagination={{
-        pageSize: 5,
-        onChange: (page) => console.log(page),
-      }}
-      dateFormatter="string"
-      headerTitle="分摊申请表"
-    />
+    <>
+      <div className="mb-4">
+        <div className="text-base mb-2 font-medium">发送的收款请求</div>
+        <Table
+          columns={columns}
+          dataSource={data ?? []}
+          rowKey="request_id"
+          // headerTitle=""
+        />
+      </div>
+      <div>
+        <div className="text-base mb-2 font-medium">来自他人的收款请求</div>
+        <Table
+          columns={columnsReceive}
+          dataSource={userReceiveData ?? []}
+          rowKey="request_id"
+        />
+      </div>
+    </>
   );
 };
 

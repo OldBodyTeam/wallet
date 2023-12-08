@@ -64,4 +64,78 @@ export class UsersService {
         });
     }
 
+    /**
+     * Total amount of money sent/received by a user in a range of dates.
+     * @param userId
+     * @param startTime
+     * @param endTime
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static readUserTotalAmountUsersUserIdTotalAmountGet(
+        userId: number,
+        startTime?: (string | null),
+        endTime?: (string | null),
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{user_id}/total_amount',
+            path: {
+                'user_id': userId,
+            },
+            query: {
+                'start_time': startTime,
+                'end_time': endTime,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Total/average amount of money sent and received by a user per month
+     * @param userId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static readUserMonthlyAmountUsersUserIdMonthlyAmountGet(
+        userId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/{user_id}/monthly_amount',
+            path: {
+                'user_id': userId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * The transactions with the maximum amount of money per month.
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static readMonthlyMaxAmountUsersMonthlyMaxAmountGet(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/monthly_max_amount',
+        });
+    }
+
+    /**
+     * The best users (users who have sent/received the maximum total amount of money).
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static readBestUsersUsersBestUsersGet(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/users/best_users',
+        });
+    }
+
 }
