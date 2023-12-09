@@ -24,13 +24,25 @@ export class StatementsService {
 
     /**
      * 按月分组查询用户的收支明细
+     * @param year
+     * @param month
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static getIncomeStatementsGroupByMonthStatementsGroupGet(): CancelablePromise<any> {
+    public static getIncomeStatementsGroupByMonthStatementsGroupGet(
+        year?: number,
+        month?: number,
+    ): CancelablePromise<any> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/statements/group',
+            query: {
+                'year': year,
+                'month': month,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
 

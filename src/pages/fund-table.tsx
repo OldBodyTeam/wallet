@@ -1,6 +1,6 @@
 import { FC, useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Space } from "antd";
-import { AccountsService } from "@/client";
+import { AccountsService, IndentifiersService } from "@/client";
 import { useRequest } from "ahooks";
 const FundComponent = () => {
   const [visible, setVisible] = useState(false);
@@ -21,8 +21,8 @@ const FundComponent = () => {
     await runAsync();
   };
   const bind = async (data) => {
-
-  }
+    await AccountsService.setMainAccountAccountsAccountIdSetMainPut(data.account_id);
+  };
   const columns = [
     {
       title: "账户",
@@ -30,22 +30,29 @@ const FundComponent = () => {
       key: "account_number",
     },
     {
-        title: "账户ID",
-        dataIndex: "account_id",
-        key: "account_id",
-      },
+      title: "账户ID",
+      dataIndex: "account_id",
+      key: "account_id",
+    },
     {
       title: "操作",
       dataIndex: "operation",
       key: "operation",
       render: (_, record) => (
         <Space>
-          <Button type="primary" onClick={() => unbind(record)}>
+          <Button type="primary" onClick={() => unbind(record)} disabled={record.user_link_account[0].is_primary}>
             解除绑定
           </Button>
-          <Button type="primary" onClick={() => bind(record)} disabled={record.account_id === record.user_link_account}>
+          <Button
+            type="primary"
+            onClick={() => bind(record)}
+            disabled={record.user_link_account[0].is_primary}
+          >
             绑定主账户
           </Button>
+          {/* <Button type="primary" onClick={() => handleValidate(record)}>
+            验证
+          </Button> */}
         </Space>
       ),
     },
@@ -53,7 +60,7 @@ const FundComponent = () => {
 
   useEffect(() => {
     runAsync();
-  }, []);
+  }, [runAsync]);
 
   const showModal = () => {
     setVisible(true);
