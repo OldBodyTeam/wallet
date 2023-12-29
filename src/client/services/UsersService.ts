@@ -2,9 +2,12 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { BestUsers } from '../models/BestUsers';
 import type { User } from '../models/User';
 import type { UserBase } from '../models/UserBase';
 import type { UserCreate } from '../models/UserCreate';
+import type { UserMonthlyAmount } from '../models/UserMonthlyAmount';
+import type { UserMonthlyMaxAmount } from '../models/UserMonthlyMaxAmount';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -96,12 +99,12 @@ export class UsersService {
     /**
      * Total/average amount of money sent and received by a user per month
      * @param userId
-     * @returns any Successful Response
+     * @returns UserMonthlyAmount Successful Response
      * @throws ApiError
      */
     public static readUserMonthlyAmountUsersUserIdMonthlyAmountGet(
         userId: number,
-    ): CancelablePromise<any> {
+    ): CancelablePromise<UserMonthlyAmount> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/users/{user_id}/monthly_amount',
@@ -116,10 +119,10 @@ export class UsersService {
 
     /**
      * The transactions with the maximum amount of money per month.
-     * @returns any Successful Response
+     * @returns UserMonthlyMaxAmount Successful Response
      * @throws ApiError
      */
-    public static readMonthlyMaxAmountUsersMonthlyMaxAmountGet(): CancelablePromise<any> {
+    public static readMonthlyMaxAmountUsersMonthlyMaxAmountGet(): CancelablePromise<Array<UserMonthlyMaxAmount>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/users/monthly_max_amount',
@@ -128,10 +131,10 @@ export class UsersService {
 
     /**
      * The best users (users who have sent/received the maximum total amount of money).
-     * @returns any Successful Response
+     * @returns BestUsers Successful Response
      * @throws ApiError
      */
-    public static readBestUsersUsersBestUsersGet(): CancelablePromise<any> {
+    public static readBestUsersUsersBestUsersGet(): CancelablePromise<BestUsers> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/users/best_users',
