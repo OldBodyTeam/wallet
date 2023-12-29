@@ -3,11 +3,10 @@ import {
   ProFormInstance,
   ProFormList,
   ProFormMoney,
-  ProFormRadio,
   ProFormText,
   ProFormTextArea,
 } from "@ant-design/pro-components";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useRef, useState } from "react";
 import { RequestTransactionsService } from "@/client";
 import dayjs from "dayjs";
@@ -26,6 +25,7 @@ const FundReceive = () => {
         }
       })
     });
+    message.success("提交成功");
   };
   const handleConfig = async () => {
     const data = formRef.current?.getFieldsValue();

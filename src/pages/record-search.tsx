@@ -54,11 +54,23 @@ const RecordSearch = () => {
       render: (_, record) => record.send ? record.send.memo : record.request.memo
     },
     {
-      title: "用户信息",
+      title: "用户姓名",
       dataIndex: "name",
       key: "name",
       render: (_, record) => record?.to_user?.name ?? record?.from_user?.name ?? '--'
     },
+    {
+      title: "用户SSN",
+      dataIndex: "ssn",
+      key: "ssn",
+      render: (_, record) => record?.to_user?.ssn ?? record?.from_user?.ssn ?? '--'
+    },
+    // {
+    //   title: "用户标识",
+    //   dataIndex: "identifier",
+    //   key: "identifier",
+    //   render: (_, record) => record.send ? record.send.identifier.identifier_value : record.request.identifier.identifier_value
+    // },
   ];
 
   return (

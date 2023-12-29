@@ -1,4 +1,4 @@
-import { Avatar, Button, Form, Input, InputNumber } from "antd";
+import { Avatar, Button, Form, Input} from "antd";
 import { useNavigate } from "react-router-dom";
 import a from "@/assets/wallet.png";
 import { UsersService, IndentifiersService, OpenAPI } from "@/client";
@@ -9,7 +9,7 @@ interface registerProps {
 const SignForm: React.FC<registerProps> = (props) => {
   const { changeItemState } = props;
   const [form] = Form.useForm();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const onFinish = async (values) => {
     console.log("Received values of form: ", values);
     const data = await UsersService.createUserUsersPost({
@@ -33,7 +33,7 @@ const SignForm: React.FC<registerProps> = (props) => {
       identifier_value: values.email,
     });
     console.log(data);
-    // navigate("/home");
+    navigate("/home");
   };
   return (
     <div className="flex justify-center items-center w-full h-screen">

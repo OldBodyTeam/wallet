@@ -12,6 +12,8 @@ const TableComponent: FC<{ data: unknown[]; run: () => void }> = ({
     IndentifiersService.verifyIdentifierIndentifiersIdentifierValueVerifyPost(
       data.identifier_value
     );
+    await run();
+    console.log('validate')
   };
   const unbind = async (data) => {
     await IndentifiersService.unbindIdentifierIndentifiersIdentifierValueUnbindPost(
@@ -36,7 +38,7 @@ const TableComponent: FC<{ data: unknown[]; run: () => void }> = ({
         if (text === "verified") {
           return "已验证";
         }
-        return "未知状态";
+        return "未验证";
       },
     },
 

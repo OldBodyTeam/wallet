@@ -24,9 +24,10 @@ const FundOperation = () => {
       <div style={{ display: selection === "B" ? "block" : "none" }}>
         <FundReceive />
       </div>
-      <div style={{ display: selection === "C" ? "block" : "none" }}>
+      {selection === "C"?<CheckRecord />:null}
+      {/* <div style={{ display: selection === "C" ? "block" : "none" }}>
         <CheckRecord />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -20,7 +20,7 @@ const FundModel: FC<{ data: RequestTransaction }> = ({ data }) => {
       key: "request_status",
       render: (status) => {
         switch (status) {
-          case "completed":
+          case "confirmed":
             return "完成状态";
           case "pending":
           default:

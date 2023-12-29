@@ -1,4 +1,4 @@
-import { FC, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Table, Button, Modal, Form, Input, Space } from "antd";
 import { AccountsService, IndentifiersService } from "@/client";
 import { useRequest } from "ahooks";
@@ -22,6 +22,7 @@ const FundComponent = () => {
   };
   const bind = async (data) => {
     await AccountsService.setMainAccountAccountsAccountIdSetMainPut(data.account_id);
+    await runAsync();
   };
   const columns = [
     {
